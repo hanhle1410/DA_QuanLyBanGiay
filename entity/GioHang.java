@@ -55,7 +55,7 @@ public class GioHang {
     @Column(name = "TinhTrang")
     private Integer tinhTrang;
 
-    @OneToMany(mappedBy = "GioHang", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "idGioHang", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<GioHangCT> gioHangCTList;
 
 
