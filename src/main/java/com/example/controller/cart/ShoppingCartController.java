@@ -2,6 +2,7 @@ package com.example.controller.cart;
 
 import com.example.repository.ChiTietSPRepository;
 import com.example.service.impl.ChiTietSPService;
+import com.example.service.impl.HoaDonService;
 import com.example.service.impl.SanPhamService;
 import com.example.service.impl.ShoppingCartService;
 import com.example.entity.GioHangCT;
@@ -30,7 +31,8 @@ public class ShoppingCartController {
     private ChiTietSPService chiTietSPService;
     @Autowired
     private SanPhamService sanPhamService;
-
+    @Autowired
+    private HoaDonService hoaDonService;
 
 
     @GetMapping("views")
@@ -40,7 +42,7 @@ public class ShoppingCartController {
         model.addAttribute("chiTietSPList", chiTietSPList);
         model.addAttribute("CART_ITEMS", shoppingCartService.getAllItems());
         model.addAttribute("TOTAL", shoppingCartService.getAmount());
-
+        model.addAttribute("hoaDonList", hoaDonService.getallHoaDon());
         return "cart/cart-items";
     }
 

@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -36,8 +37,8 @@ public class HoaDon {
     @JoinColumn(name = "IdSP", referencedColumnName = "Id")
     private SanPham idSP;
 
-    @Size(max = 20)
-    @Column(name = "Ma", length = 20)
+
+    @Column(name = "Ma")
     private String ma;
 
     @Column(name = "NgayTao")
@@ -52,4 +53,6 @@ public class HoaDon {
     @Column(name = "TrangThai")
     private Integer trangThai;
 
+    @OneToMany(mappedBy = "idHoaDon", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<HoaDonCT> hoaDonCTList;
 }

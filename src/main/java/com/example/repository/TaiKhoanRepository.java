@@ -1,21 +1,18 @@
 package com.example.repository;
 
 import com.example.entity.KhachHang;
+import com.example.entity.TaiKhoan;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface KhachHangRepository extends JpaRepository<KhachHang, UUID> {
+public interface TaiKhoanRepository extends JpaRepository<TaiKhoan, UUID> {
 
-    @Query("SELECT c FROM KhachHang c WHERE c.ten = :ten" )
-    KhachHang findByTen(@Param("ten") String ten);
-
-    @Query("SELECT c FROM KhachHang c where c.sdt=:sdt")
-    KhachHang findBySdt( @Param("sdt") String sdt);
+    @Query("SELECT c FROM TaiKhoan c WHERE c.username = :username" )
+    TaiKhoan findByUsername(@Param("username") String username);
 
 }

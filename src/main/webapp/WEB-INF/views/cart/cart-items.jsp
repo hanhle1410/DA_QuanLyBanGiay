@@ -14,7 +14,9 @@
         * {
             box-sizing: border-box;
         }
-
+        .pagination > li {
+            margin-right: 5px;
+        }
         body {
             margin: 0;
             padding: 0;
@@ -112,24 +114,19 @@
             <div class="card">
                 <h4 class="card-header my-1">Thông tin thanh toán</h4>
                 <div class="card-body">
-                    <form action="/hoa-don/luu" method="post">
-                        <div class="form-group">
-                            <label for="email">Nhân viên:</label>
-                            <input type="email" name="email" id="email" class="form-control" required>
-                        </div>
+                    <form method="post" action="/pay/luu" onsubmit="return validateForm()">
                         <p>Tổng tiền: ${TOTAL}</p>
                         <div class="form-group">
-                            <label for="ten">Tên khách hàng:</label>
-                            <input type="text" name="ten" id="ten" class="form-control" required>
+                            <label>Tên khách hàng:</label>
+                            <input type="text" name="ten" id="ten" class="form-control">
                         </div>
                         <div class="form-group">
-                            <label for="sdt">Số điện thoại:</label>
-                            <input type="text" name="sdt" id="sdt" class="form-control" required>
+                            <label>Số điện thoại:</label>
+                            <input type="text" name="sdt" id="sdt" class="form-control" value="0" onblur="kiemTraKhachHang(this)">
+                            <span id="sdt-error" style="color: red; display: none;">Vui lòng nhập số điện thoại</span>
+                            <span id="sdt-format-error" style="color: red; display: none;">Số điện thoại không hợp lệ</span>
                         </div>
-                        <div class="form-group text-center">
-                            <a class="btn btn-primary btn-create">Tạo hóa đơn</a>
-                            <button class="btn btn-primary btn-submit" type="submit">Thanh toán</button>
-                        </div>
+                        <button class="btn btn-primary form-group text-center" type="submit">Tạo hóa đơn</button>
                     </form>
                 </div>
             </div>
@@ -175,10 +172,67 @@
             </table>
             <a class="btn btn-primary btn-sm" href="/shopping-cart/clear">Xóa giỏ hàng</a>
         </div>
+
+<%--        <div class="col-md-4">--%>
+<%--            <h4>Danh sách hóa đơn</h4>--%>
+<%--            <table class="table">--%>
+<%--                <thead>--%>
+<%--                <tr>--%>
+<%--                    <th scope="col">Tên KH</th>--%>
+<%--                    <th scope="col">Tên NV</th>--%>
+<%--                    <th scope="col">Ngày tạo</th>--%>
+<%--                </tr>--%>
+<%--                </thead>--%>
+<%--                <tbody>--%>
+<%--                <c:forEach items="${ hoaDonList }" var="l">--%>
+<%--                    <tr>--%>
+<%--                        <td> ${ l.idKH.ten } </td>--%>
+<%--                        <td> ${ l.idNV.ten } </td>--%>
+<%--                        <td> ${ l.ngayTao } </td>--%>
+<%--                    </tr>--%>
+<%--                </c:forEach>--%>
+<%--                </tbody>--%>
+<%--            </table>--%>
+<%--        </div>--%>
     </div>
 </div>
 
+<script>
+    function validateForm() {
+        var sdtInput = document.getElementById("sdt");
+        var sdtError = document.getElementById("sdt-error");
+        var sdtFormatError = document.getElementById("sdt-format-error");
+        var sdtRegex = /^0\d{9,10}$/; // định dạng số điện thoại bắt đầu bằng số 0, có độ dài từ 10-11 chữ số
+        if (sdtInput.value == "0") {
+            sdtError.style.display = "none";
+            sdtFormatError.style.display = "none";
+            return true;
+        } else if (!sdtRegex.test(sdtInput.value)) {
+            sdtError.style.display = "none";
+            sdtFormatError.style.display = "block";
+            return false;
+        } else {
+            sdtError.style.display = "none";
+            sdtFormatError.style.display = "none";
+            return true;
+        }
+    }
 
+    function kiemTraKhachHang(input) {
+        var sdtInput = document.getElementById("sdt");
+        if (sdtInput.value == "0") {
+            sdtInput.value = input.value;
+        }
+    }
+</script>
+<script>
+    function kiemTraKhachHang(input) {
+        var sdtInput = document.getElementById("sdt");
+        if (sdtInput.value == "" || sdtInput.value == null) {
+            sdtInput.value = 0;
+        }
+    }
+</script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {

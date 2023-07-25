@@ -23,9 +23,9 @@ public class HoaDonCT {
     @JoinColumn(name = "IdHoaDon", referencedColumnName = "Id")
     private HoaDon idHoaDon;
 
-    @Size(max = 20)
-    @Column(name = "SoLuong", length = 20)
-    private String soLuong;
+
+    @Column(name = "SoLuong")
+    private BigDecimal soLuong;
 
     @Column(name = "DonGia", precision = 20)
     private BigDecimal donGia;

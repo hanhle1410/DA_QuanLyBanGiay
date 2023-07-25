@@ -51,4 +51,5 @@ public class NhanVien {
     @Nationalized
     @Column(name = "DiaChi", length = 100)
     private String diaChi;
+
 }
