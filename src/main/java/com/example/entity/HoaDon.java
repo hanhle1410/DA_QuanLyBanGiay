@@ -33,11 +33,6 @@ public class HoaDon {
     @JoinColumn(name = "IdVoucher", referencedColumnName = "Id")
     private Voucher idVoucher;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "IdSP", referencedColumnName = "Id")
-    private SanPham idSP;
-
-
     @Column(name = "Ma")
     private String ma;
 
@@ -46,6 +41,9 @@ public class HoaDon {
 
     @Column(name = "NgayThanhToan")
     private LocalDate ngayThanhToan;
+
+    @Column(name = "GhiChu")
+    private String ghiChu;
 
     @Column(name = "TongTien", precision = 20)
     private BigDecimal tongTien;

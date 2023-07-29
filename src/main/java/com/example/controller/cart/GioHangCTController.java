@@ -1,13 +1,9 @@
 package com.example.controller.cart;
 
-import com.example.repository.ChiTietSPRepository;
-import com.example.service.impl.ChiTietSPService;
-import com.example.service.impl.HoaDonService;
-import com.example.service.impl.SanPhamService;
-import com.example.service.impl.ShoppingCartService;
-import com.example.entity.GioHangCT;
-import com.example.entity.ChiTietSP;
-import com.example.entity.SanPham;
+import com.example.entity.*;
+import com.example.repository.*;
+import com.example.service.impl.*;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,27 +12,41 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.UUID;
 
 @Controller
 @RequestMapping("/shopping-cart/")
-public class ShoppingCartController {
-
+public class GioHangCTController {
+    @Autowired
+    private TaiKhoanRepository taiKhoanRepository;
+    @Autowired
+    private KhachHangService khachHangService;
     @Autowired
     private ChiTietSPRepository chiTietSPRepository;
-
     @Autowired
-    private ShoppingCartService shoppingCartService;
+    private HoaDonCTRepository hoaDonCTRepository;
+    @Autowired
+    private GioHangCTService shoppingCartService;
     @Autowired
     private ChiTietSPService chiTietSPService;
     @Autowired
     private SanPhamService sanPhamService;
     @Autowired
     private HoaDonService hoaDonService;
-
+    @Autowired
+    private VoucherRepository voucherRepository;
+    @Autowired
+    private GioHangRepository gioHangRepository;
 
     @GetMapping("views")
     public String viewProduct(@RequestParam(defaultValue = "0", name = "page") int number, Model model) {
+
+        List<Voucher> vouchers = voucherRepository.findAll();
+        Collections.sort(vouchers, Comparator.comparing(Voucher::getGiamGia));
+        model.addAttribute("vouchers", vouchers);
         Pageable pageable = PageRequest.of(number, 4);
         Page<ChiTietSP> chiTietSPList = chiTietSPRepository.findAll(pageable);
         model.addAttribute("chiTietSPList", chiTietSPList);
@@ -49,16 +59,23 @@ public class ShoppingCartController {
     @GetMapping("search")
     public String search(@RequestParam(defaultValue = "0", name = "page") int number,
                          @RequestParam("q") String keyword, Model model) {
+        List<Voucher> vouchers = voucherRepository.findAll();
+        Collections.sort(vouchers, Comparator.comparing(Voucher::getGiamGia));
+        model.addAttribute("vouchers", vouchers);
         Pageable pageable = PageRequest.of(number, 4);
-        Page<ChiTietSP> chiTietSPList = chiTietSPService.search(keyword, pageable);
+        Page<ChiTietSP> chiTietSPList = chiTietSPRepository.findAll(pageable);
         model.addAttribute("chiTietSPList", chiTietSPList);
+        model.addAttribute("CART_ITEMS", shoppingCartService.getAllItems());
+        model.addAttribute("TOTAL", shoppingCartService.getAmount());
+        model.addAttribute("hoaDonList", hoaDonService.getallHoaDon());
         return "cart/cart-items";
     }
 
 
     @GetMapping("add/{id}")
-    public String addCart(Model model, @PathVariable("id") UUID id
+    public String addCart(Model model, @PathVariable("id") UUID id, HttpSession session
     ) {
+
         ChiTietSP chiTietSP = chiTietSPService.layChiTietSP(id);
         if (chiTietSP != null) {
             GioHangCT item = new GioHangCT();
@@ -72,6 +89,7 @@ public class ShoppingCartController {
             }
         }
         model.addAttribute("list_product", shoppingCartService);
+
         return "redirect:/shopping-cart/views";
     }
 

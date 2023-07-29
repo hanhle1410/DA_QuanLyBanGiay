@@ -22,7 +22,7 @@ public class GioHangServiceImpl implements GioHangService {
     private HoaDonRepository hoaDonRepository;
 
 
-//
+
 //    @Override
 //    public void thanhToan(GioHang gioHang) {
 //        HoaDon hoaDon = new HoaDon();
@@ -35,7 +35,7 @@ public class GioHangServiceImpl implements GioHangService {
 //        for (GioHangCT gioHangCT : gioHang.getGioHangCTList()) {
 //            HoaDonCT hoaDonCT = new HoaDonCT();
 //          //  hoaDonCT.setIdSP(gioHangCT.getIdSP());
-//            hoaDonCT.setSoLuong(String.valueOf(gioHangCT.getSoLuong()));
+//            hoaDonCT.setSoLuong(BigDecimal.valueOf(gioHangCT.getSoLuong()));
 //            hoaDonCT.setDonGia(gioHangCT.getDonGia());
 //            hoaDonCT.setIdHoaDon(hoaDon);
 //            hoaDon.getHoaDonCTList().add(hoaDonCT);

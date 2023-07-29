@@ -65,7 +65,7 @@
         <div class="col-md-8">
             <h4 class="page-title">Danh sách sản phẩm</h4>
             <form class="form-inline" action="/shopping-cart/search" method="GET">
-                <div class="form-group">
+                <div class="form-group search-results-container">
                     <label for="search-input" class="sr-only">Tìm kiếm sản phẩm</label>
                     <input type="text" class="form-control mr-2" id="search-input" name="q"
                            placeholder="Tìm kiếm sản phẩm">
@@ -114,8 +114,16 @@
             <div class="card">
                 <h4 class="card-header my-1">Thông tin thanh toán</h4>
                 <div class="card-body">
-                    <form method="post" action="/pay/luu" onsubmit="return validateForm()">
-                        <p>Tổng tiền: ${TOTAL}</p>
+                    <form method="post" action="/pay/luu">
+                        <div class="form-group">
+                            <label>Giảm giá</label>
+                            <select name="idVoucher">
+                                <c:forEach items="${ vouchers }" var="l" >
+                                    <option value="${l.id}">${l.giamGia}%</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <p>Tổng tiền: <span id="total">${TOTAL}</span></p>
                         <div class="form-group">
                             <label>Tên khách hàng:</label>
                             <input type="text" name="ten" id="ten" class="form-control">
@@ -126,7 +134,7 @@
                             <span id="sdt-error" style="color: red; display: none;">Vui lòng nhập số điện thoại</span>
                             <span id="sdt-format-error" style="color: red; display: none;">Số điện thoại không hợp lệ</span>
                         </div>
-                        <button class="btn btn-primary form-group text-center" type="submit">Tạo hóa đơn</button>
+                        <button class="btn btn-primary form-group text-center" type="submit" onclick="validateForm()">Tạo hóa đơn</button>
                     </form>
                 </div>
             </div>
@@ -172,33 +180,15 @@
             </table>
             <a class="btn btn-primary btn-sm" href="/shopping-cart/clear">Xóa giỏ hàng</a>
         </div>
-
-<%--        <div class="col-md-4">--%>
-<%--            <h4>Danh sách hóa đơn</h4>--%>
-<%--            <table class="table">--%>
-<%--                <thead>--%>
-<%--                <tr>--%>
-<%--                    <th scope="col">Tên KH</th>--%>
-<%--                    <th scope="col">Tên NV</th>--%>
-<%--                    <th scope="col">Ngày tạo</th>--%>
-<%--                </tr>--%>
-<%--                </thead>--%>
-<%--                <tbody>--%>
-<%--                <c:forEach items="${ hoaDonList }" var="l">--%>
-<%--                    <tr>--%>
-<%--                        <td> ${ l.idKH.ten } </td>--%>
-<%--                        <td> ${ l.idNV.ten } </td>--%>
-<%--                        <td> ${ l.ngayTao } </td>--%>
-<%--                    </tr>--%>
-<%--                </c:forEach>--%>
-<%--                </tbody>--%>
-<%--            </table>--%>
-<%--        </div>--%>
     </div>
 </div>
 
+
+
+
+
 <script>
-    function validateForm() {
+    function validateFormTTTT() {
         var sdtInput = document.getElementById("sdt");
         var sdtError = document.getElementById("sdt-error");
         var sdtFormatError = document.getElementById("sdt-format-error");
@@ -227,9 +217,64 @@
 </script>
 <script>
     function kiemTraKhachHang(input) {
+        var regex = /^[0-9]+$/; // Biểu thức chính quy kiểm tra có toàn số hay không
+        var sdt = input.value;
+        if (sdt.length == 0) {
+            document.getElementById("sdt-error").style.display = "block";
+            document.getElementById("sdt-format-error").style.display = "none";
+            return false;
+        } else if (!regex.test(sdt)) {
+            document.getElementById("sdt-error").style.display = "none";
+            document.getElementById("sdt-format-error").style.display = "block";
+            return false;
+        } else {
+            document.getElementById("sdt-error").style.display = "none";
+            document.getElementById("sdt-format-error").style.display = "none";
+            return true;
+        }
+    }
+</script>
+<script>
+    function kiemTraKhachHang(input) {
         var sdtInput = document.getElementById("sdt");
         if (sdtInput.value == "" || sdtInput.value == null) {
             sdtInput.value = 0;
+        }
+    }
+</script>
+
+<script>
+    function confirmDelete(event) {
+        event.preventDefault();
+        const confirmResult = confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?');
+        if (confirmResult) {
+            window.location.href = event.currentTarget.href;
+        }
+    }
+</script>
+<script>
+    const input = document.querySelector('input[name="soLuong"]');
+    input.addEventListener('blur', () => {
+        if (input.value < 1) {
+            alert('Số lượng phải lớn hơn hoặc bằng 1');
+            input.value = 1;
+            input.focus();
+        }
+    });
+</script>
+<script>
+    function checkInput(input) {
+        const value = input.value.trim();
+        const isNumber = /^\d+$/.test(value);
+        const max = parseInt(input.dataset.max);
+        if (!isNumber) {
+            alert('Vui lòng chỉ nhập số');
+            input.value = '';
+            input.focus();
+        } else if (parseInt(value) > max) {
+            alert(`Số lượng không được vượt quá ${max}`);
+            input.value = max;
+            input.focus();
         }
     }
 </script>
@@ -251,61 +296,18 @@
                         var searchResults = $(data);
 
                         // Replace the existing table with the search results
-                        $('#search-results').html(searchResults);
+                        $('#search-results-container').find('#search-results').html(searchResults);
                     }
                 });
             } else {
                 // Restore the original table if the search keyword is less than 3 characters
-                $('#search-results').html('<c:forEach items="${ chiTietSPList.content }" var="l"><tr><td>${l.idSP.idDongSP.ten} - ${l.idSP.idDeGiay.chatLieu} - Màu sắc: ${l.idMauSP.mau} - Kích cỡ: ${l.idKichCo.coGiay}</td><td> ${l.idSP.giaBan}</td><td> ${l.soLuong}</td><td><a class="btn btn-primary" href="/shopping-cart/add/${l.id}" onclick="addToCart(event, \'${l.id}\')">ADD</a></td></tr></c:forEach>');
+                $('#search-results-container').find('#search-results').html('<c:forEach items="${ chiTietSPList.content }" var="l"><tr><td>${l.idSP.idDongSP.ten} - ${l.idSP.idDeGiay.chatLieu} - Màu sắc: ${l.idMauSP.mau} - Kích cỡ: ${l.idKichCo.coGiay}</td><td> ${l.idSP.giaBan}</td><td> ${l.soLuong}</td><td><a class="btn btn-primary" href="/shopping-cart/add/${l.id}" onclick="addToCart(event, \'${l.id}\')">ADD</a></td></tr></c:forEach>');
             }
         });
     });
 </script>
-<script>
-    function confirmDelete(event) {
-        event.preventDefault();
-        const confirmResult = confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?');
-        if (confirmResult) {
-            window.location.href = event.currentTarget.href;
-        }
-    }
-</script>
-<script>
-    const input = document.querySelector('input[name="soLuong"]');
-    input.addEventListener('blur', () => {
-        if (input.value < 1) {
-            alert('Số lượng phải lớn hơn hoặc bằng 1');
-            input.value = 1;
-            input.focus();
-        } else {
-            document.forms[1].submit();
-        }
-    });
-</script>
-<script>
-    function checkInput(input) {
-        const value = input.value.trim();
-        const isNumber = /^\d+$/.test(value);
-        const max = parseInt(input.dataset.max);
-        if (!isNumber) {
-            alert('Vui lòng chỉ nhập số');
-            input.value = '';
-            input.focus();
-        } else if (parseInt(value) > max) {
-            alert(`Số lượng không được vượt quá ${max}`);
-            input.value = max;
-            input.focus();
-        }
-    }
-</script>
-<script>
-    function addToCart(event, productId) {
-        if (!productId) {
-            event.preventDefault();
-            alert('Vui lòng chọn sản phẩm trước khi thêm vào giỏ hàng');
-        }
-    }
-</script>
+
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

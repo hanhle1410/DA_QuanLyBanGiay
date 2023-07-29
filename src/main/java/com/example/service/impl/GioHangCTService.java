@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
-public interface ShoppingCartService {
+public interface GioHangCTService {
 
     public void add(GioHangCT item);
     public void remove(UUID id);

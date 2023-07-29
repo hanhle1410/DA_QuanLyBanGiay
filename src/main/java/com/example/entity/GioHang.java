@@ -28,8 +28,8 @@ public class GioHang {
     @JoinColumn(name = "IdNV")
     private NhanVien idNV;
 
-    @Size(max = 20)
-    @Column(name = "Ma", length = 20)
+
+    @Column(name = "Ma")
     private String ma;
 
     @Column(name = "NgayTao")

@@ -54,20 +54,7 @@ public class SanPham {
 
 //    @OneToMany(mappedBy = "SanPham", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<ChiTietSP> chiTietSPList;
-//    public SanPham(UUID id, DongSP idDongSP, DeGiay idDeGiay, NhaSX idNSX, LocalDate ngayNhapHang, BigDecimal giaNhap, BigDecimal giaBan, String xuatXu, Integer trangThai) {
-//        this.id = id;
-//        this.idDongSP = idDongSP;
-//        this.idDeGiay = idDeGiay;
-//        this.idNSX = idNSX;
-//        this.ngayNhapHang = ngayNhapHang;
-//        this.giaNhap = giaNhap;
-//        this.giaBan = giaBan;
-//        this.xuatXu = xuatXu;
-//        this.trangThai = trangThai;
-//    }
-//
-//    public SanPham() {
-//
-//    }
+
+
 
 }

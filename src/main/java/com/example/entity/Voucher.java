@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.Nationalized;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -30,7 +31,7 @@ public class Voucher {
     private String ten;
 
     @Column(name = "GiamGia")
-    private Double giamGia;
+    private BigDecimal giamGia;
 
     @Column(name = "NgayBatDau")
     private LocalDate ngayBatDau;

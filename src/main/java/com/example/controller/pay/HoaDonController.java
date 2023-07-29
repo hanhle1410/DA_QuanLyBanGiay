@@ -1,10 +1,12 @@
 package com.example.controller.pay;
 
 import com.example.entity.*;
+import com.example.repository.HoaDonCTRepository;
 import com.example.repository.TaiKhoanRepository;
+import com.example.repository.VoucherRepository;
 import com.example.service.impl.HoaDonService;
 import com.example.service.impl.KhachHangService;
-import com.example.service.impl.ShoppingCartService;
+import com.example.service.impl.GioHangCTService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.core.Authentication;
@@ -17,40 +19,47 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Controller
 @RequestMapping("/pay/")
 public class HoaDonController {
     @Autowired
-    private ShoppingCartService shoppingCartService;
+    private HoaDonCTRepository hoaDonCTRepository;
+    @Autowired
+    private GioHangCTService gioHangCTService;
     @Autowired
     private TaiKhoanRepository taiKhoanRepository;
-
     @Autowired
     private HoaDonService hoaDonService;
-
     @Autowired
     private KhachHangService khachHangService;
-
+    @Autowired
+    private VoucherRepository voucherRepository;
 
     @Transactional(rollbackFor = Exception.class)
     @PostMapping("luu")
-    public String createOrUpdateHoaDon(
-            @RequestParam("ten") String ten,
-            @RequestParam("sdt") String sdt,
-            HttpSession session
+    public String createOrUpdateHoaDon(Model model,
+                                       @RequestParam("ten") String ten,
+                                       @RequestParam("sdt") String sdt,
+                                       @RequestParam(value = "idVoucher", required = false) Voucher voucherId,
+                                       HttpSession session
     ) {
         try {
+            // Thêm voucher (nếu có)
+            Voucher voucher = null;
+            if (voucherId != null) {
+                voucher = voucherRepository.findById(voucherId.getId()).orElse(null);
+            }
+
             // Lấy thông tin người dùng đang đăng nhập từ session
             TaiKhoan taiKhoan = (TaiKhoan) session.getAttribute("user");
             if (taiKhoan == null) {
                 // Nếu không tìm thấy thông tin người dùng, chuyển hướng đến trang đăng nhập
                 return "redirect:/login";
             }
+
             // Lấy thông tin nhân viên tương ứng với người dùng đang đăng nhập
             NhanVien nhanVien = taiKhoan.getIdNV();
             if (nhanVien == null) {
@@ -58,9 +67,9 @@ public class HoaDonController {
                 return "redirect:/error";
             }
 
-
             // Tìm kiếm thông tin khách hàng dựa trên số điện thoại
             KhachHang khachHang = this.khachHangService.findBySdt(sdt);
+
             // Nếu khách hàng không tồn tại, tạo mới khách hàng
             if (khachHang == null) {
                 khachHang = new KhachHang();
@@ -70,30 +79,52 @@ public class HoaDonController {
                 khachHang.setSdt(sdt);
                 this.khachHangService.addKH(khachHang);
             }
-            // Lưu khách hàng vào cơ sở dữ liệu
 
+            // Lưu khách hàng vào cơ sở dữ liệu
             HoaDon hoaDon = new HoaDon();
             String ma = UUID.randomUUID().toString();
             hoaDon.setMa(ma);
-            hoaDon.setIdKH(khachHang);
-            hoaDon.setIdNV(nhanVien); // Thêm thông tin nhân viên vào hóa đơn
+            hoaDon.setIdKH(khachHang); // Thêm thông tin khách hàng vào hóa đơn
+            hoaDon.setIdNV(nhanVien);  // Thêm thông tin nhân viên vào hóa đơn
+            if (voucher != null) {
+                hoaDon.setIdVoucher(voucher); // Thêm thông tin giảm giá vào hóa đơn (nếu có)
+            }
             hoaDon.setNgayTao(LocalDate.now());
             hoaDon.setNgayThanhToan(LocalDate.now());
-            hoaDon.setTrangThai(1); // Đánh dấu hóa đơn đã được thanh toán
-            hoaDon.setTongTien(shoppingCartService.getAmount());
+            hoaDon.setTrangThai(0); // Đánh dấu hóa đơn chưa được thanh toán
+            BigDecimal amount =  gioHangCTService.getAmount();
+            if (amount.compareTo(BigDecimal.ZERO) == 0) {
+                model.addAttribute("errorMessage", "Không thể tạo hóa đơn với giỏ hàng trống.");
+                return "redirect:/shopping-cart/views";
+            }
+            hoaDon.setTongTien(amount);
             // Lưu thông tin hóa đơn vào cơ sở dữ liệu
             hoaDonService.add(hoaDon);
+
+            List<GioHangCT> gioHangCTs =  gioHangCTService.getAllItems();
+            for (GioHangCT gioHangCT : gioHangCTs) {
+                ChiTietSP chiTietSP = gioHangCT.getIdChiTietSP();
+                HoaDonCT hoaDonCT = new HoaDonCT();
+                hoaDonCT.setIdHoaDon(hoaDon);
+                hoaDonCT.setIdChiTietSP(chiTietSP); // Sửa lỗi sai gán id
+                hoaDonCT.setSoLuong(gioHangCT.getSoLuong());
+                hoaDonCT.setDonGia(gioHangCT.getDonGia());
+                hoaDonCTRepository.save(hoaDonCT);
+            }
+
+            // Xóa giỏ hàng sau khi tạo hóa đơn thành công
+            gioHangCTService.clear();
+
             // Chuyển hướng đến trang hiển thị thông tin hóa đơn vừa tạo
             return "redirect:/pay/luu/"+hoaDon.getId();
         } catch (Exception ex) {
             // Nếu có lỗi xảy ra, rollback transaction
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            throw ex;
+            throw new RuntimeException(ex);
         }
     }
-
         @GetMapping("/luu/{id}")
         public String showHoaDon(@PathVariable("id") UUID id, Model model) {
+
             // Lấy thông tin hóa đơn từ cơ sở dữ liệu
             HoaDon hoaDon = hoaDonService.findById(id);
             // Kiểm tra xem hóa đơn có tồn tại không
@@ -105,6 +136,23 @@ public class HoaDonController {
             // Trả về tên của trang JSP để hiển thị thông tin hóa đơn
             return "pay/thong-tin-hoa-don";
         }
+
+    @PostMapping("thanh-toan")
+    public String updateTrangThaiHD(
+            @RequestParam("hoaDonId") UUID hoaDonId
+    ) {
+        // Lấy thông tin hóa đơn từ cơ sở dữ liệu
+        HoaDon hoaDon = hoaDonService.findById(hoaDonId);
+        // Kiểm tra xem hóa đơn có tồn tại không
+        if (hoaDon == null) {
+            return "redirect:/shopping-cart/views";
+        }
+        // Cập nhật trạng thái của hóa đơn thành "paid"
+        hoaDon.setTrangThai(1);
+        hoaDonService.add(hoaDon);
+        return "pay/thong-tin-hoa-don";
+    }
+
 
 
 

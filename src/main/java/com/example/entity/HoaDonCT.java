@@ -23,9 +23,12 @@ public class HoaDonCT {
     @JoinColumn(name = "IdHoaDon", referencedColumnName = "Id")
     private HoaDon idHoaDon;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "IdChiTietSP", referencedColumnName = "Id")
+    private ChiTietSP idChiTietSP;
 
     @Column(name = "SoLuong")
-    private BigDecimal soLuong;
+    private Integer soLuong;
 
     @Column(name = "DonGia", precision = 20)
     private BigDecimal donGia;

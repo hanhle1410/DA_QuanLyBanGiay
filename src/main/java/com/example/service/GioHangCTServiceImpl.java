@@ -8,8 +8,9 @@ import com.example.entity.GioHangCT;
 
 import com.example.repository.ChiTietSPRepository;
 import com.example.repository.GioHangCTRepository;
+import com.example.repository.HoaDonCTRepository;
 import com.example.service.impl.ChiTietSPService;
-import com.example.service.impl.ShoppingCartService;
+import com.example.service.impl.GioHangCTService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
@@ -21,16 +22,16 @@ import java.util.stream.Collectors;
 
 @SessionScope
 @Service
-public class ShoppingCartServiceImpl implements ShoppingCartService {
+public class GioHangCTServiceImpl implements GioHangCTService {
 
     @Autowired
     private ChiTietSPService chiTietSPService;
-
     @Autowired
     private ChiTietSPRepository chiTietSPRepository;
-
     @Autowired
     private GioHangCTRepository gioHangCTRepository;
+    @Autowired
+    private HoaDonCTRepository hoaDonCTRepository;
 
     private final Map<UUID, GioHangCT> maps = new HashMap<>();
 
