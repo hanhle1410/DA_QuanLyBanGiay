@@ -16,37 +16,6 @@ import java.time.LocalDate;
 @Service
 public class GioHangServiceImpl implements GioHangService {
 
-    @Autowired
-    private GioHangRepository gioHangRepository;
-    @Autowired
-    private HoaDonRepository hoaDonRepository;
-
-
-
-//    @Override
-//    public void thanhToan(GioHang gioHang) {
-//        HoaDon hoaDon = new HoaDon();
-//        hoaDon.setIdKH(gioHang.getIdKH());
-//        hoaDon.setIdNV(gioHang.getIdNV());
-//        hoaDon.setNgayTao(LocalDate.now());
-//        hoaDon.setTrangThai(0);
-//
-//        BigDecimal tongTien = BigDecimal.ZERO;
-//        for (GioHangCT gioHangCT : gioHang.getGioHangCTList()) {
-//            HoaDonCT hoaDonCT = new HoaDonCT();
-//          //  hoaDonCT.setIdSP(gioHangCT.getIdSP());
-//            hoaDonCT.setSoLuong(BigDecimal.valueOf(gioHangCT.getSoLuong()));
-//            hoaDonCT.setDonGia(gioHangCT.getDonGia());
-//            hoaDonCT.setIdHoaDon(hoaDon);
-//            hoaDon.getHoaDonCTList().add(hoaDonCT);
-//
-//            tongTien = tongTien.add(gioHangCT.getDonGia().multiply(new BigDecimal(gioHangCT.getSoLuong())));
-//        }
-//
-//        hoaDon.setTongTien(tongTien);
-//        hoaDonRepository.save(hoaDon);
-//        gioHangRepository.delete(gioHang);
-//    }
 
 
 }

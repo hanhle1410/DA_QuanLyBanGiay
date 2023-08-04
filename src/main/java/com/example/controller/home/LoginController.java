@@ -62,7 +62,7 @@ public class LoginController  extends HttpServlet {
         TaiKhoan user = tkService.authenticate(username, password);
         if (user != null) {
             session.setAttribute("user", user);
-            return "redirect:/shopping-cart/views";
+            return "redirect:/home";
         } else {
             return "redirect:/login?error=1";
         }

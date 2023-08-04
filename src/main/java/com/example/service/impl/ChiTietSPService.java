@@ -11,7 +11,6 @@ public interface ChiTietSPService {
     List<ChiTietSP> layDanhSachChiTietSP(UUID idSanPham);
 
     ChiTietSP layChiTietSP(UUID id);
-    public void addToCart(ChiTietSP chiTietSP, int soLuong);
 
     public Page<ChiTietSP> search(String keyword, Pageable pageable);
     List<ChiTietSP> getALLChiTietSP();

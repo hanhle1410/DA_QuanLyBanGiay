@@ -48,43 +48,31 @@ public class GioHangCTServiceImpl implements GioHangCTService {
             this.gioHangCTRepository.save(cartItem);
         }
     }
-
     @Override
     public void remove(UUID id) {
         Optional<GioHangCT> cartItemOptional = gioHangCTRepository.findById(id);
         if (cartItemOptional.isPresent()) {
             GioHangCT cartItem = cartItemOptional.get();
             gioHangCTRepository.delete(cartItem);
-
-            // Cập nhật số lượng sản phẩm còn lại trong kho
-            Optional<ChiTietSP> chiTietSPOptional = chiTietSPRepository.findById(cartItem.getIdChiTietSP().getId());
-            if (chiTietSPOptional.isPresent()) {
-                ChiTietSP chiTietSPInDb = chiTietSPOptional.get();
-                int remainingQuantity = chiTietSPInDb.getSoLuong() + cartItem.getSoLuong();
-                chiTietSPInDb.setSoLuong(remainingQuantity);
-                chiTietSPRepository.save(chiTietSPInDb);
-            }
         }
-    }
-
-    @Override
-    public GioHangCT update(UUID id , int soLuong) {
-        GioHangCT cartItem = gioHangCTRepository.findById(id).orElse(null);
-        cartItem.setSoLuong(soLuong);
-        this.gioHangCTRepository.save(cartItem);
-        this.chiTietSPService.addToCart(cartItem.getIdChiTietSP(),soLuong);
-        return cartItem;
     }
     @Override
     public void clear() {
         gioHangCTRepository.deleteAll();
     }
-
     @Override
     public List<GioHangCT> getAllItems() {
         return gioHangCTRepository.findAll();
     }
-
+    @Override
+    public GioHangCT update(UUID id, int soLuong) {
+        GioHangCT cartItem = gioHangCTRepository.findById(id).orElse(null);
+        if (cartItem != null) {
+            cartItem.setSoLuong(soLuong);
+            gioHangCTRepository.save(cartItem);
+        }
+        return cartItem;
+    }
     @Override
     public int getCount() {
         List<GioHangCT> cartItems = getAllItems();
@@ -93,7 +81,6 @@ public class GioHangCTServiceImpl implements GioHangCTService {
         }
         return 0;
     }
-
     @Override
     public BigDecimal getAmount() {
         Map<UUID, GioHangCT> gioHangCTMap = gioHangCTRepository.findAll().stream()

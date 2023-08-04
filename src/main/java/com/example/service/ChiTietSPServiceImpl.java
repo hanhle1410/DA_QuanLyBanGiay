@@ -15,7 +15,6 @@ import java.util.UUID;
 @Service
 public class ChiTietSPServiceImpl implements ChiTietSPService {
 
-
     @Autowired
     private ChiTietSPRepository chiTietSPRepository;
 
@@ -23,7 +22,6 @@ public class ChiTietSPServiceImpl implements ChiTietSPService {
     public List<ChiTietSP> layDanhSachChiTietSP(UUID sanPham) {
         return this.chiTietSPRepository.findBySanPamId(sanPham);
     }
-
     @Override
     public ChiTietSP layChiTietSP(UUID id) {
         Optional<ChiTietSP> optional = chiTietSPRepository.findById(id);
@@ -33,18 +31,6 @@ public class ChiTietSPServiceImpl implements ChiTietSPService {
         return null;
     }
 
-    @Override
-    public void addToCart(ChiTietSP chiTietSP, int soLuong) {
-        // Add the item to the cart
-        // ...
-        // Update the ChiTietSP quantity
-        ChiTietSP chiTietSPInDb = chiTietSPRepository.findById(chiTietSP.getId()).orElse(null);
-        if (chiTietSPInDb != null) {
-            int remainingQuantity = chiTietSPInDb.getSoLuong() - soLuong;
-            chiTietSPInDb.setSoLuong(remainingQuantity);
-            chiTietSPRepository.save(chiTietSPInDb);
-        }
-    }
     @Override
     public Page<ChiTietSP> search(String keyword, Pageable pageable) {
         return chiTietSPRepository.search(keyword, pageable);
