@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>demo</artifactId>
+	<artifactId>DA_QuanLyBanGiay</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>demo</name>
-	<description>demo</description>
+	<name>DA_QuanLyBanGiay</name>
+	<description>DA_QuanLyBanGiay</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
@@ -72,26 +72,6 @@
 			<artifactId>jakarta.servlet.jsp.jstl</artifactId>
 			<version>3.0.1</version>
 		</dependency>
-		<!--        &lt;!&ndash; Spring Security Core &ndash;&gt;-->
-		<!--        <dependency>-->
-		<!--            <groupId>org.springframework.security</groupId>-->
-		<!--            <artifactId>spring-security-core</artifactId>-->
-		<!--            <version>${spring-security.version}</version>-->
-		<!--        </dependency>-->
-
-		<!--        &lt;!&ndash; Spring Security Config &ndash;&gt;-->
-		<!--        <dependency>-->
-		<!--            <groupId>org.springframework.security</groupId>-->
-		<!--            <artifactId>spring-security-config</artifactId>-->
-		<!--            <version>${spring-security.version}</version>-->
-		<!--        </dependency>-->
-
-		<!--        &lt;!&ndash; Spring Security Web &ndash;&gt;-->
-		<!--        <dependency>-->
-		<!--            <groupId>org.springframework.security</groupId>-->
-		<!--            <artifactId>spring-security-web</artifactId>-->
-		<!--            <version>${spring-security.version}</version>-->
-		<!--        </dependency>-->
 
 	</dependencies>
 
