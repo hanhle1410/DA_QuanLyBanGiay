@@ -54,7 +54,8 @@ public class GioHangCTController {
         Page<ChiTietSP> chiTietSPList = chiTietSPRepository.findAll(pageable);
         model.addAttribute("chiTietSPList", chiTietSPList);
 
-        return "cart/cart-items";
+        model.addAttribute("view","/WEB-INF/views/cart/cart-items.jsp");
+        return "home";
     }
 
     @GetMapping("search")
