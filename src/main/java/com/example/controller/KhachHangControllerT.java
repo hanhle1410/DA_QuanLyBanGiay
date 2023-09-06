@@ -26,7 +26,7 @@ public class KhachHangControllerT {
     public String hienThi(Model model){
         model.addAttribute("lists", khachHangService.getAll());
         model.addAttribute("view", "/WEB-INF/views/khach_hang/index.jsp");
-        return "layout";
+        return "home";
     }
 
     @PostMapping("add")
@@ -47,7 +47,7 @@ public class KhachHangControllerT {
         model.addAttribute("kh", khachHang);
         model.addAttribute("lists", khachHangService.getAll());
         model.addAttribute("view", "/WEB-INF/views/khach_hang/index.jsp");
-        return "layout";
+        return "home";
     }
 
     @GetMapping("view-update/{id}")
@@ -56,7 +56,7 @@ public class KhachHangControllerT {
         model.addAttribute("lists", khachHangService.getAll());
         model.addAttribute("kh", khachHang);
         model.addAttribute("view", "/WEB-INF/views/khach_hang/update.jsp");
-        return "layout";
+        return "home";
     }
 
     @PostMapping("update")

@@ -3,7 +3,6 @@ package com.example.controller;
 import com.example.entity.NhanVien;
 import com.example.service.ChucVuServiceT;
 import com.example.service.NhanVienServiceT;
-import com.example.service.TaiKhoanServiceT;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,7 +31,7 @@ public class NhanVienControllerT {
         model.addAttribute("listsCV", chucVuService.getAll());
         model.addAttribute("lists", nhanVienService.getAll());
         model.addAttribute("view", "/WEB-INF/views/nhan_vien/index.jsp");
-        return "layout";
+        return "home";
     }
 
     @PostMapping("add")
@@ -54,7 +53,7 @@ public class NhanVienControllerT {
         model.addAttribute("nv", nhanVien);
         model.addAttribute("lists", nhanVienService.getAll());
         model.addAttribute("view", "/WEB-INF/views/nhan_vien/index.jsp");
-        return "layout";
+        return "home";
     }
 
     @GetMapping("view-update/{id}")
@@ -64,7 +63,7 @@ public class NhanVienControllerT {
         model.addAttribute("listsCV", chucVuService.getAll());
         model.addAttribute("nv", nhanVien);
         model.addAttribute("view", "/WEB-INF/views/nhan_vien/update.jsp");
-        return "layout";
+        return "home";
     }
 
     @PostMapping("update")
