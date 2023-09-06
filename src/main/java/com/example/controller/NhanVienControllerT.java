@@ -26,8 +26,6 @@ public class NhanVienControllerT {
     @Autowired
     private ChucVuServiceT chucVuService;
 
-    @Autowired
-    private TaiKhoanServiceT taiKhoanService;
 
     @GetMapping("hien-thi")
     public String hienThi(Model model){
