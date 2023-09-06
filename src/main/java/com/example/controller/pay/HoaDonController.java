@@ -138,7 +138,9 @@ public class HoaDonController {
             // Truyền thông tin hóa đơn vào model để hiển thị trên trang JSP
             model.addAttribute("hoaDon", hoaDon);
             // Trả về tên của trang JSP để hiển thị thông tin hóa đơn
-            return "pay/thong-tin-hoa-don";
+
+            model.addAttribute("view","/WEB-INF/views/pay/thong-tin-hoa-don.jsp");
+            return "home";
         }
 
     @PostMapping("thanh-toan")
